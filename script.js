@@ -39,8 +39,8 @@ function isWebBluetoothEnabled() {
 disconnectButton.addEventListener('click', disconnectDevice);
 
 // Write to the ESP32 LED Characteristic
-onButton.addEventListener('click', () => writeOnCharacteristic(1));
-offButton.addEventListener('click', () => writeOnCharacteristic(0));
+//onButton.addEventListener('click', () => writeOnCharacteristic(1));
+//offButton.addEventListener('click', () => writeOnCharacteristic(0));
 
 function connectToDevice(){
 	navigator.bluetooth.requestDevice({
@@ -65,7 +65,7 @@ function connectToDevice(){
 .then(service => {
     bleServiceFound = service;
     console.log("Service discovered:", service.uuid);
-    return service.getCharacteristic(sensorCharacteristic);
+    return service.getCharacteristic(Characteristic);
 })
 
 .then(characteristic => {
