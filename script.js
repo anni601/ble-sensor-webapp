@@ -1,139 +1,31 @@
-const connectButton = document.getElementById('connectBleButton');
-const disconnectButton = document.getElementById('disconnectBleButton');
-const onButton = document.getElementById('onButton');
-const offButton = document.getElementById('offButton');
-const retrievedValue = document.getElementById('valueContainer');
-const latestValueSent = document.getElementById('valueSent');
-const bleStateContainer = document.getElementById('bleState');
-const timestampContainer = document.getElementById('timestamp');
+const serviceUUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
+const characteristicUUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E";
+let characteristic;
 
-//Define BLE Device Specs
-var deviceName ='ESP32';
-var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';
-var ledCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';
-var sensorCharacteristic= '19b10001-e8f2-537e-4f6c-d104768a1214';
+document.getElementById("connectBtn").addEventListener("click", async () => {
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: "ESP_BLE" }],
+      optionalServices: [serviceUUID]
+    });
 
-var bleServer;
-var bleServiceFound;
-var sensorCharacteristicFound;
+    document.getElementById("status").innerText = "Verbinde...";
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService(serviceUUID);
+    characteristic = await service.getCharacteristic(characteristicUUID);
 
-// Connect Button (search for BLE Devices only if BLE is available)
-connectButton.addEventListener('click', (event) => {
-    if (isWebBluetoothEnabled()){
-        connectToDevice();
-    }
+    await characteristic.startNotifications();
+    characteristic.addEventListener("characteristicvaluechanged", handleNotifications);
+
+    document.getElementById("status").innerText = "Verbunden mit " + device.name;
+  } catch (error) {
+    console.error(error);
+    document.getElementById("status").innerText = "Fehler: " + error;
+  }
 });
 
-// Check if BLE is available in your Browser
-function isWebBluetoothEnabled() {
-    if (!navigator.bluetooth) {
-        console.log("Web Bluetooth API is not available in this browser!");
-         bleStateContainer.innerHTML = "Web Bluetooth API is not available in this browser/device!";
-         return false
-    }
-    console.log('Web Bluetooth API supported in this browser.');
-    return true
+function handleNotifications(event) {
+  const value = new TextDecoder().decode(event.target.value);
+  document.getElementById("values").innerText = value;
+  console.log("Empfangen:", value);
 }
-
-// Disconnect Button
-disconnectButton.addEventListener('click', disconnectDevice);
-
-// Write to the ESP32 LED Characteristic
-//onButton.addEventListener('click', () => writeOnCharacteristic(1));
-//offButton.addEventListener('click', () => writeOnCharacteristic(0));
-
-function connectToDevice(){
-	navigator.bluetooth.requestDevice({
-    	filters: [{name: deviceName}],
-    	optionalServices: [bleService]
-})
-
-.then(device => {
-    console.log('Device Selected:', device.name);
-    bleStateContainer.innerHTML = 'Connected to device ' + device.name;
-    bleStateContainer.style.color = "#24af37";
-    device.addEventListener('gattservicedisconnected', onDisconnected);
-    return device.gatt.connect();
-})
-
-.then(gattServer =>{
-    bleServer = gattServer;
-    console.log("Connected to GATT Server");
-    return bleServer.getPrimaryService(bleService);
- })
-
-.then(service => {
-    bleServiceFound = service;
-    console.log("Service discovered:", service.uuid);
-    return service.getCharacteristic(Characteristic);
-})
-
-.then(characteristic => {
-    console.log("Characteristic discovered:", characteristic.uuid);
-    sensorCharacteristicFound = characteristic;
-    characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
-    characteristic.startNotifications();
-    console.log("Notifications Started.");
-    return characteristic.readValue();
-})
-
-.then(value => {
-    console.log("Read value: ", value);
-    const decodedValue = new TextDecoder().decode(value);
-    console.log("Decoded value: ", decodedValue);
-    retrievedValue.innerHTML = decodedValue;
-})
-
-function handleCharacteristicChange(event){
-    const newValueReceived = new TextDecoder().decode(event.target.value);
-    console.log("Characteristic value changed: ", newValueReceived);
-    retrievedValue.innerHTML = newValueReceived;
-    timestampContainer.innerHTML = getDateTime();
-}
-
-if (bleServer && bleServer.connected) {
-    bleServiceFound.getCharacteristic(ledCharacteristic)
-     .then(characteristic => {
-        console.log("Found the LED characteristic: ", characteristic.uuid);
-        const data = new Uint8Array([value]);
-        return characteristic.writeValue(data);
-})
-
-.then(() => {
-    latestValueSent.innerHTML = value;
-    console.log("Value written to LEDcharacteristic:", value);
-})
-
-} else {
-    console.error ("Bluetooth is not connected. Cannot write to characteristic.")
-    window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
-}
-
-function disconnectDevice() {
-    console.log("Disconnect Device.");
-    if (bleServer && bleServer.connected) {
-        if (sensorCharacteristicFound) {
-            sensorCharacteristicFound.stopNotifications()
-                .then(() => {
-                    console.log("Notifications Stopped");
-                    return bleServer.disconnect();
-                })
-                .then(() => {
-                    console.log("Device Disconnected");
-                    bleStateContainer.innerHTML = "Device Disconnected";
-                    bleStateContainer.style.color = "#d13a30";
-
-                })
-                .catch(error => {
-                    console.log("An error occurred:", error);
-                });
-        } else {
-            console.log("No characteristic found to disconnect.");
-        }
-    } else {
-        // Throw an error if Bluetooth is not connected
-        console.error("Bluetooth is not connected.");
-        window.alert("Bluetooth is not connected.")
-    }
-}
-
