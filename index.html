@@ -1,32 +1,32 @@
-<!https://randomnerdtutorials.com/esp32-web-bluetooth/>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ESP32 BLE Web-App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32 BLE Web-App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-  <!-- Verknüpfung mit CSS -->
-  <link rel="stylesheet" type="image/png" href="style.css">
+<!-- Verknüpfung mit CSS -->
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <h1>ESP32 BLE Web-App</h1>
-  <button id="connectBLEButton">Mit ESP32 verbinden</button>
-  <button id="disconnectBLEButton">Entkoppeln von ESP32</button>
-  <p>BLE Status: <strong><span id="deviceConnected" style="color:#d13a30;" Disconnected</span></strong></p>
-  
-  <h2>LED Steuerung</h2>
-  <button id="onButton">LED ein (1 Minute)</button>
-  <button id="offButton">LED aus</button>
+<h1>ESP32 BLE Web-App</h1>
+<button id="connectBLEButton">Mit ESP32 verbinden</button>
+<button id="disconnectBLEButton">Entkoppeln von ESP32</button>
+<p>BLE Status: <strong><span id="deviceConnected" style="color:#d13a30;">Disconnected</span></strong></p>
+<h2>LED Steuerung</h2>
+<button id="onButton">LED ein (1 Minute)</button>
+<button id="offButton">LED aus</button>
 
-  <div id="data">
-    <h3>Sensorwerte</h3>
-    <p><strong>Touch:</strong> <span id="value">-</span></p>
-    <p><strong>Foto:</strong> <span id="value_foto">-</span></p>
-    <p><strong>LED-Status:</strong> <span id="ledStatus">-</span></p>
-  </div>
 
-  <!-- Verknüpfung mit JavaScript -->
-  <script src="script.js"></script>
+<div id="data">
+<h3>Sensorwerte</h3>
+<p><strong>Touch:</strong> <span id="value">-</span></p>
+<p><strong>Foto:</strong> <span id="value_foto">-</span></p>
+<p><strong>LED-Status:</strong> <span id="ledStatus">-</span></p>
+</div>
+
+
+<!-- Verknüpfung mit JavaScript -->
+<script src="script.js"></script>
 </body>
 </html>
