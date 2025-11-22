@@ -26,7 +26,7 @@ const ledSpan = document.getElementById("ledStatus");
 // -----------------------------
 // JSON laden (UUIDs)
 // -----------------------------
-fetch("esp32_ble.json")
+fetch("script.json")
   .then(response => response.json())
   .then(json => {
     console.log("BLE JSON geladen:", json);
