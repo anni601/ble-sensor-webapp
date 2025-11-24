@@ -1,3 +1,5 @@
+//durch diese Festlegungen, ansprechen der Objekte der html Datei
+
 const connectButton = document.getElementById("connectBLEButton");
 const disconnectButton = document.getElementById("disconnectBLEButton");
 const deviceConnectedSpan = document.getElementById("deviceConnected");
@@ -9,16 +11,17 @@ const valueSpan = document.getElementById("value");
 const fotoSpan = document.getElementById("value_foto");
 const ledSpan = document.getElementById("ledStatus");
 
-// UUIDs *NUR kleinbuchstaben*
+// UUIDs in Kleinbuchstaben!
 const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
 const CHARACTERISTIC_UUID_RX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
 const CHARACTERISTIC_UUID_TX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
 
+//entstehende Objekte beim Verbindungsaufbau werden global definiert
 let device, server, service;
 let txCharacteristic, rxCharacteristic;
 
-// Verbinden
-connectButton.addEventListener("click", async () => {
+// Verbinden -> async ermöglicht await und asynchrone Abläufe
+connectButton.addEventListener("click", async (event) => {
     try {
         console.log("Suche nach BLE Geräten...");
 
@@ -83,10 +86,21 @@ function onDisconnected() {
     deviceConnectedSpan.textContent = "Disconnected";
     deviceConnectedSpan.style.color = "red";
     console.log("BLE getrennt");
+valueSpan.textContent = "0";
+fotoSpan.textContent = "0";
+ledSpan.textContent = "aus";
+
 }
 
 disconnectButton.addEventListener("click", () => {
     if (device && device.gatt.connected) {
         device.gatt.disconnect();
     }
+    else{
+	console.log("Already disconnected");
+    }
+valueSpan.textContent = "0";
+fotoSpan.textContent = "0";
+ledSpan.textContent = "aus";
+
 });
