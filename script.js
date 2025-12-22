@@ -10,6 +10,9 @@ const offButton = document.getElementById("offButton");
 const valueSpan = document.getElementById("value");
 const fotoSpan = document.getElementById("value_foto");
 const ledSpan = document.getElementById("ledStatus");
+const temperatureSpan = document.getElementById("temperature");
+const pressureSpan = document.getElementById("pressure");
+const humiditySpan = document.getElementById("humidity");
 
 // UUIDs in Kleinbuchstaben!
 const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
@@ -80,6 +83,9 @@ function handleNotifications(event) {
     valueSpan.textContent = parts[0].split(":")[1];
     fotoSpan.textContent = parts[1].split(":")[1];
     ledSpan.textContent = parts[2].split(":")[1];
+    temperatureSpan.textContent = parts [3].split(":")[1];
+    pressureSpan.textContent = parts [4].split(":")[1];
+    humiditySpan.textContent = parts [5].split(":")[1];
 }
 
 function onDisconnected() {
@@ -89,7 +95,9 @@ function onDisconnected() {
 valueSpan.textContent = "0";
 fotoSpan.textContent = "0";
 ledSpan.textContent = "aus";
-
+temperatureSpan.textContent = "0";
+pressureSpan.textContent = "0";
+humiditySpan.textContent = "0";
 }
 
 disconnectButton.addEventListener("click", () => {
@@ -102,5 +110,8 @@ disconnectButton.addEventListener("click", () => {
 valueSpan.textContent = "0";
 fotoSpan.textContent = "0";
 ledSpan.textContent = "aus";
+temperatureSpan.textContent = "0";
+pressureSpan.textContent = "0";
+humiditySpan.textContent = "0";
 
 });
